@@ -7,10 +7,12 @@ import (
 	"flag"
 	"fmt"
 	"math"
+	"net/http"
 	"os"
 	"os/signal"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/alaborderie/a-1006-122137/internal/qc"
 )
@@ -19,9 +21,13 @@ func run(ctx context.Context, args []string) error {
 	if len(args) == 0 {
 		return fmt.Errorf("usage: matrixqc synth|check|seed|bench|serve [flags]")
 	}
-	root, err := qc.CacheRoot()
-	if err != nil {
-		return err
+	var root string
+	if args[0] != "serve" {
+		var err error
+		root, err = qc.CacheRoot()
+		if err != nil {
+			return err
+		}
 	}
 	switch args[0] {
 	case "synth":
@@ -128,7 +134,32 @@ func run(ctx context.Context, args []string) error {
 	case "seed":
 		return runSeed(ctx, args[1:], root)
 	case "serve":
-		return fmt.Errorf("serve is not implemented yet")
+		f := flag.NewFlagSet("serve", flag.ContinueOnError)
+		port := os.Getenv("PORT")
+		if port == "" {
+			port = "8080"
+		}
+		addr := f.String("addr", ":"+port, "listen address (default from PORT or :8080)")
+		if err := f.Parse(args[1:]); err != nil {
+			return err
+		}
+		site, err := qc.NewSite(qc.SiteConfig{PilotURL: os.Getenv("PILOT_URL"), ContactEmail: os.Getenv("CONTACT_EMAIL")})
+		if err != nil {
+			return err
+		}
+		server := &http.Server{Addr: *addr, Handler: site, ReadHeaderTimeout: 5 * time.Second, IdleTimeout: 30 * time.Second}
+		go func() {
+			<-ctx.Done()
+			shutdownCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+			defer cancel()
+			server.Shutdown(shutdownCtx)
+		}()
+		fmt.Printf("Synthetic-only demo listening on %s\n", *addr)
+		err = server.ListenAndServe()
+		if err == http.ErrServerClosed {
+			return nil
+		}
+		return err
 	default:
 		return fmt.Errorf("unknown command %q", args[0])
 	}

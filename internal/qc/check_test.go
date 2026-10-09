@@ -11,6 +11,9 @@ import (
 )
 
 func TestCheckErrorCannotPass(t *testing.T) {
+	if testing.Short() {
+		t.Skip("real OCR/ffprobe integration runs in Docker full suite")
+	}
 	dir := cacheDir(t)
 	matrix := filepath.Join(dir, "synthetic-matrix.csv")
 	if err := os.WriteFile(matrix, []byte("file,version_id,language,text:legal\nsynthetic-broken.mp4,synthetic,en-GB,Terms apply\n"), 0600); err != nil {

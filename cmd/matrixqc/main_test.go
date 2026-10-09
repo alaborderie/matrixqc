@@ -16,3 +16,12 @@ func TestCheckRequiresInputsAndValidConfidence(t *testing.T) {
 		t.Fatalf("input contract not implemented: %v", err)
 	}
 }
+
+func TestStaticServeNeedsNoHomeOrCache(t *testing.T) {
+	t.Setenv("HOME", "")
+	t.Setenv("XDG_CACHE_HOME", "")
+	err := run(context.Background(), []string{"serve", "--unknown-flag"})
+	if err == nil || !strings.Contains(err.Error(), "flag provided but not defined") {
+		t.Fatalf("static server unexpectedly requires filesystem/cache: %v", err)
+	}
+}

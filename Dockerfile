@@ -34,3 +34,10 @@ ENV PATH=/usr/local/go/bin:$PATH MATRIXQC_OCR_INTEGRATION=1
 COPY --chown=10001:10001 . /src
 WORKDIR /src
 ENTRYPOINT ["go", "test", "./..."]
+
+FROM scratch AS web
+COPY --from=build /out/matrixqc /matrixqc
+USER 10001:10001
+ENV PORT=8080
+EXPOSE 8080
+ENTRYPOINT ["/matrixqc", "serve"]

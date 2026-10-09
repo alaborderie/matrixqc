@@ -1,0 +1,755 @@
+{
+  "id": "batch-4fdfbeabcb1a-1791634901624267614",
+  "matrix_version_id": "4fdfbeabcb1a9a1f83354883a241ffc1e93b1406eceabf98b949e35d8b4b439a",
+  "engine": "rapidocr",
+  "engine_version": "3.9.2",
+  "model_sha256": "ea6f45e58e75ce1ffa7c6aa6034671607f29b56eb61daac71151736387b94f56",
+  "gate": {
+    "no_gate": false,
+    "threshold": 1
+  },
+  "match": {
+    "min_frames": 12,
+    "confidence": 0.8,
+    "placeholder_tokens": []
+  },
+  "started_at": "2026-10-10T12:21:41.624267614Z",
+  "finished_at": "2026-10-10T12:24:00.475474472Z",
+  "core_seconds": 287.287141,
+  "analysed_seconds": 35,
+  "synthetic": true,
+  "deliverables": [
+    {
+      "id": "deliverable-1",
+      "batch_id": "batch-4fdfbeabcb1a-1791634901624267614",
+      "path": "synthetic-07-orphan.mp4",
+      "sha256": "",
+      "container": "",
+      "codec": "",
+      "width": 0,
+      "height": 0,
+      "fps": 0,
+      "frame_count": 0,
+      "start_timecode": "",
+      "frames_decoded": 0,
+      "frames_ocrd": 0,
+      "ocr_frame_ids": null,
+      "outcome": "error",
+      "findings": [
+        {
+          "id": "deliverable-1-finding-1",
+          "deliverable_id": "deliverable-1",
+          "check": "C0",
+          "outcome": "error",
+          "first_frame": 0,
+          "last_frame": 0,
+          "timecode": "",
+          "observed_text": "",
+          "confidence": 0,
+          "evidence_frame": 0,
+          "message": "file has no row",
+          "quad": [
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ]
+          ]
+        }
+      ],
+      "checks_run": [
+        "C0"
+      ]
+    },
+    {
+      "id": "deliverable-2",
+      "batch_id": "batch-4fdfbeabcb1a-1791634901624267614",
+      "version_row_id": "row-2",
+      "path": "synthetic-00-clean.mp4",
+      "sha256": "ee7c51fab30c5378af8fa704e140ce437fe5a28552210585b69d88afba34cae5",
+      "container": "mov,mp4,m4a,3gp,3g2,mj2",
+      "codec": "h264",
+      "width": 854,
+      "height": 480,
+      "fps": 24,
+      "frame_count": 120,
+      "start_timecode": "00:00:00:00",
+      "frames_decoded": 120,
+      "frames_ocrd": 30,
+      "ocr_frame_ids": [
+        0,
+        4,
+        8,
+        12,
+        16,
+        20,
+        24,
+        28,
+        32,
+        36,
+        40,
+        44,
+        48,
+        52,
+        56,
+        60,
+        64,
+        68,
+        72,
+        76,
+        80,
+        84,
+        88,
+        92,
+        96,
+        100,
+        104,
+        108,
+        112,
+        116
+      ],
+      "outcome": "pass",
+      "findings": [],
+      "checks_run": [
+        "C0",
+        "C1",
+        "C2",
+        "C3",
+        "C4"
+      ]
+    },
+    {
+      "id": "deliverable-3",
+      "batch_id": "batch-4fdfbeabcb1a-1791634901624267614",
+      "version_row_id": "row-3",
+      "path": "synthetic-01-clean.mp4",
+      "sha256": "ee6925b5c9e703e6466d077c5a8eacf67fdfb6d879a8fbed22dae5f1fa065d9b",
+      "container": "mov,mp4,m4a,3gp,3g2,mj2",
+      "codec": "h264",
+      "width": 480,
+      "height": 480,
+      "fps": 24,
+      "frame_count": 120,
+      "start_timecode": "00:00:00:00",
+      "frames_decoded": 120,
+      "frames_ocrd": 40,
+      "ocr_frame_ids": [
+        0,
+        3,
+        6,
+        9,
+        12,
+        15,
+        18,
+        21,
+        24,
+        28,
+        31,
+        34,
+        37,
+        40,
+        43,
+        46,
+        49,
+        52,
+        55,
+        58,
+        61,
+        64,
+        67,
+        70,
+        73,
+        76,
+        79,
+        82,
+        85,
+        88,
+        91,
+        94,
+        97,
+        100,
+        104,
+        107,
+        110,
+        113,
+        116,
+        119
+      ],
+      "outcome": "pass",
+      "findings": [],
+      "checks_run": [
+        "C0",
+        "C1",
+        "C2",
+        "C3",
+        "C4"
+      ]
+    },
+    {
+      "id": "deliverable-4",
+      "batch_id": "batch-4fdfbeabcb1a-1791634901624267614",
+      "version_row_id": "row-4",
+      "path": "synthetic-02-missing.mp4",
+      "sha256": "ab15895273032bdd74268332a2fbddccd1aa50ab71e6f56797e3b1805531ba97",
+      "container": "mov,mp4,m4a,3gp,3g2,mj2",
+      "codec": "h264",
+      "width": 480,
+      "height": 854,
+      "fps": 24,
+      "frame_count": 120,
+      "start_timecode": "00:00:00:00",
+      "frames_decoded": 120,
+      "frames_ocrd": 40,
+      "ocr_frame_ids": [
+        0,
+        3,
+        6,
+        9,
+        12,
+        15,
+        18,
+        21,
+        24,
+        28,
+        31,
+        34,
+        37,
+        40,
+        43,
+        46,
+        49,
+        52,
+        55,
+        58,
+        61,
+        64,
+        67,
+        70,
+        73,
+        76,
+        79,
+        82,
+        85,
+        88,
+        91,
+        94,
+        97,
+        100,
+        104,
+        107,
+        110,
+        113,
+        116,
+        119
+      ],
+      "outcome": "fail",
+      "findings": [
+        {
+          "id": "deliverable-4-finding-1",
+          "deliverable_id": "deliverable-4",
+          "check": "C1",
+          "expectation_id": "row-4-col-4",
+          "outcome": "fail",
+          "first_frame": 0,
+          "last_frame": 119,
+          "timecode": "00:00:00:00",
+          "observed_text": "",
+          "confidence": 0,
+          "evidence_path": "evidence/deliverable-4-finding-1.png",
+          "evidence_frame": 119,
+          "message": "Missing expected value for 12 consecutive frames",
+          "expected_text": "2025550102",
+          "quad": [
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ]
+          ]
+        }
+      ],
+      "checks_run": [
+        "C0",
+        "C1",
+        "C2",
+        "C3",
+        "C4"
+      ]
+    },
+    {
+      "id": "deliverable-5",
+      "batch_id": "batch-4fdfbeabcb1a-1791634901624267614",
+      "version_row_id": "row-5",
+      "path": "synthetic-03-foreign_phone.mp4",
+      "sha256": "196e2f7349a31de9edccfaea58455c962c8e0739acf0d9f0cd3c1040257595bd",
+      "container": "mov,mp4,m4a,3gp,3g2,mj2",
+      "codec": "h264",
+      "width": 854,
+      "height": 480,
+      "fps": 24,
+      "frame_count": 120,
+      "start_timecode": "00:00:00:00",
+      "frames_decoded": 120,
+      "frames_ocrd": 30,
+      "ocr_frame_ids": [
+        0,
+        4,
+        8,
+        12,
+        16,
+        20,
+        24,
+        28,
+        32,
+        36,
+        40,
+        44,
+        48,
+        52,
+        56,
+        60,
+        64,
+        68,
+        72,
+        76,
+        80,
+        84,
+        88,
+        92,
+        96,
+        100,
+        104,
+        108,
+        112,
+        116
+      ],
+      "outcome": "fail",
+      "findings": [
+        {
+          "id": "deliverable-5-finding-1",
+          "deliverable_id": "deliverable-5",
+          "check": "C2",
+          "outcome": "fail",
+          "first_frame": 0,
+          "last_frame": 119,
+          "timecode": "00:00:00:00",
+          "observed_text": "2025550100",
+          "confidence": 0.99998,
+          "other_version_row_id": "row-2",
+          "evidence_path": "evidence/deliverable-5-finding-1.png",
+          "evidence_frame": 0,
+          "message": "Foreign phone value",
+          "quad": [
+            [
+              277,
+              151
+            ],
+            [
+              575,
+              151
+            ],
+            [
+              575,
+              203
+            ],
+            [
+              277,
+              203
+            ]
+          ]
+        },
+        {
+          "id": "deliverable-5-finding-2",
+          "deliverable_id": "deliverable-5",
+          "check": "C1",
+          "expectation_id": "row-5-col-4",
+          "outcome": "fail",
+          "first_frame": 0,
+          "last_frame": 119,
+          "timecode": "00:00:00:00",
+          "observed_text": "",
+          "confidence": 0,
+          "evidence_path": "evidence/deliverable-5-finding-2.png",
+          "evidence_frame": 119,
+          "message": "Missing expected value for 12 consecutive frames",
+          "expected_text": "2025550103",
+          "quad": [
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ]
+          ]
+        }
+      ],
+      "checks_run": [
+        "C0",
+        "C1",
+        "C2",
+        "C3",
+        "C4"
+      ]
+    },
+    {
+      "id": "deliverable-6",
+      "batch_id": "batch-4fdfbeabcb1a-1791634901624267614",
+      "version_row_id": "row-6",
+      "path": "synthetic-04-placeholder.mp4",
+      "sha256": "ca1f0799931b3da20663afdbfc9dfacbe000de1bab9607c48ff1e6d0a6fbf538",
+      "container": "mov,mp4,m4a,3gp,3g2,mj2",
+      "codec": "h264",
+      "width": 480,
+      "height": 480,
+      "fps": 24,
+      "frame_count": 120,
+      "start_timecode": "00:00:00:00",
+      "frames_decoded": 120,
+      "frames_ocrd": 40,
+      "ocr_frame_ids": [
+        0,
+        3,
+        6,
+        9,
+        12,
+        15,
+        18,
+        21,
+        24,
+        28,
+        31,
+        34,
+        37,
+        40,
+        43,
+        46,
+        49,
+        52,
+        55,
+        58,
+        61,
+        64,
+        67,
+        70,
+        73,
+        76,
+        79,
+        82,
+        85,
+        88,
+        91,
+        94,
+        97,
+        100,
+        104,
+        107,
+        110,
+        113,
+        116,
+        119
+      ],
+      "outcome": "fail",
+      "findings": [
+        {
+          "id": "deliverable-6-finding-1",
+          "deliverable_id": "deliverable-6",
+          "check": "C3",
+          "outcome": "fail",
+          "first_frame": 0,
+          "last_frame": 119,
+          "timecode": "00:00:00:00",
+          "observed_text": "FPO",
+          "confidence": 0.9992,
+          "evidence_path": "evidence/deliverable-6-finding-1.png",
+          "evidence_frame": 0,
+          "message": "Placeholder token: FPO",
+          "quad": [
+            [
+              199,
+              376
+            ],
+            [
+              279,
+              376
+            ],
+            [
+              279,
+              413
+            ],
+            [
+              199,
+              413
+            ]
+          ]
+        }
+      ],
+      "checks_run": [
+        "C0",
+        "C1",
+        "C2",
+        "C3",
+        "C4"
+      ]
+    },
+    {
+      "id": "deliverable-7",
+      "batch_id": "batch-4fdfbeabcb1a-1791634901624267614",
+      "version_row_id": "row-7",
+      "path": "synthetic-05-near_match.mp4",
+      "sha256": "71858d7a2ca921191f3fb79808015292f85015511281ff91a8925eb1d3a2c146",
+      "container": "mov,mp4,m4a,3gp,3g2,mj2",
+      "codec": "h264",
+      "width": 480,
+      "height": 854,
+      "fps": 24,
+      "frame_count": 120,
+      "start_timecode": "00:00:00:00",
+      "frames_decoded": 120,
+      "frames_ocrd": 40,
+      "ocr_frame_ids": [
+        0,
+        3,
+        6,
+        9,
+        12,
+        15,
+        18,
+        21,
+        24,
+        28,
+        31,
+        34,
+        37,
+        40,
+        43,
+        46,
+        49,
+        52,
+        55,
+        58,
+        61,
+        64,
+        67,
+        70,
+        73,
+        76,
+        79,
+        82,
+        85,
+        88,
+        91,
+        94,
+        97,
+        100,
+        104,
+        107,
+        110,
+        113,
+        116,
+        119
+      ],
+      "outcome": "needs_review",
+      "findings": [
+        {
+          "id": "deliverable-7-finding-1",
+          "deliverable_id": "deliverable-7",
+          "check": "C4",
+          "expectation_id": "row-7-col-4",
+          "outcome": "needs_review",
+          "first_frame": 0,
+          "last_frame": 119,
+          "timecode": "00:00:00:00",
+          "observed_text": "2025550109",
+          "confidence": 1,
+          "evidence_path": "evidence/deliverable-7-finding-1.png",
+          "evidence_frame": 0,
+          "message": "Near match; never rounded up to pass",
+          "expected_text": "2025550105",
+          "quad": [
+            [
+              147,
+              278
+            ],
+            [
+              332,
+              278
+            ],
+            [
+              332,
+              309
+            ],
+            [
+              147,
+              309
+            ]
+          ]
+        },
+        {
+          "id": "deliverable-7-finding-2",
+          "deliverable_id": "deliverable-7",
+          "check": "C4",
+          "expectation_id": "row-7-col-4",
+          "outcome": "needs_review",
+          "first_frame": 0,
+          "last_frame": 119,
+          "timecode": "00:00:00:00",
+          "observed_text": "",
+          "confidence": 0,
+          "evidence_path": "evidence/deliverable-7-finding-2.png",
+          "evidence_frame": 119,
+          "message": "Expected value not confirmed; OCR uncertainty prevents a missing-text verdict",
+          "expected_text": "2025550105",
+          "quad": [
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ]
+          ]
+        }
+      ],
+      "checks_run": [
+        "C0",
+        "C1",
+        "C2",
+        "C3",
+        "C4"
+      ]
+    },
+    {
+      "id": "deliverable-8",
+      "batch_id": "batch-4fdfbeabcb1a-1791634901624267614",
+      "version_row_id": "row-8",
+      "path": "synthetic-06-single_frame_foreign_phone.mp4",
+      "sha256": "e33dc56bb80d852fafd56a716d0bfb04ed2762c006accbb64203df888a8b4582",
+      "container": "mov,mp4,m4a,3gp,3g2,mj2",
+      "codec": "h264",
+      "width": 854,
+      "height": 480,
+      "fps": 24,
+      "frame_count": 120,
+      "start_timecode": "00:00:00:00",
+      "frames_decoded": 120,
+      "frames_ocrd": 31,
+      "ocr_frame_ids": [
+        0,
+        4,
+        8,
+        12,
+        16,
+        20,
+        24,
+        28,
+        32,
+        36,
+        40,
+        44,
+        48,
+        52,
+        56,
+        60,
+        61,
+        65,
+        69,
+        73,
+        77,
+        81,
+        85,
+        89,
+        93,
+        97,
+        101,
+        105,
+        109,
+        113,
+        117
+      ],
+      "outcome": "fail",
+      "findings": [
+        {
+          "id": "deliverable-8-finding-1",
+          "deliverable_id": "deliverable-8",
+          "check": "C2",
+          "outcome": "fail",
+          "first_frame": 60,
+          "last_frame": 60,
+          "timecode": "00:00:02:12",
+          "observed_text": "2025550100",
+          "confidence": 1,
+          "other_version_row_id": "row-2",
+          "evidence_path": "evidence/deliverable-8-finding-1.png",
+          "evidence_frame": 60,
+          "message": "Foreign phone value",
+          "quad": [
+            [
+              277,
+              151
+            ],
+            [
+              575,
+              151
+            ],
+            [
+              575,
+              203
+            ],
+            [
+              277,
+              203
+            ]
+          ]
+        }
+      ],
+      "checks_run": [
+        "C0",
+        "C1",
+        "C2",
+        "C3",
+        "C4"
+      ]
+    }
+  ]
+}
