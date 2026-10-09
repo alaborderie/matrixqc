@@ -113,7 +113,7 @@ func PlanSynthetic(opts SynthOptions) (SyntheticPlan, error) {
 		if fontSize < 20 {
 			fontSize = 20
 		}
-		v := SyntheticVariant{File: fmt.Sprintf("synthetic-%02d-%s.mp4", i, kind), VersionID: fmt.Sprintf("synthetic-region-%02d", i), Language: lang, Aspect: aspect, Phone: fmt.Sprintf("202555%04d", 100+i), URL: fmt.Sprintf("region%d.example.invalid", i), Legal: legal, ErrorKind: kind, Font: fonts[(i+rng.Intn(len(fonts)))%len(fonts)], Width: width, Height: height, FontSize: fontSize, InjectionFrame: int(opts.Seconds * float64(opts.FPS) / 2)}
+		v := SyntheticVariant{File: fmt.Sprintf("synthetic-%02d-%s.mp4", i, kind), VersionID: fmt.Sprintf("synthetic-region-%02d", i), Language: lang, Aspect: aspect, Phone: fmt.Sprintf("202555%04d", 100+i), URL: fmt.Sprintf("example.invalid/%c", 'a'+i%26), Legal: legal, ErrorKind: kind, Font: fonts[(i+rng.Intn(len(fonts)))%len(fonts)], Width: width, Height: height, FontSize: fontSize, InjectionFrame: int(opts.Seconds * float64(opts.FPS) / 2)}
 		v.Label = SyntheticLabel(v)
 		plan.Variants = append(plan.Variants, v)
 	}
@@ -227,7 +227,7 @@ func Synth(ctx context.Context, dir string, opts SynthOptions) error {
 				return err
 			}
 		}
-		if err := draw("url", v.URL, v.Height/2, v.FontSize-2, ""); err != nil {
+		if err := draw("url", v.URL, v.Height/2, v.FontSize+4, ""); err != nil {
 			return err
 		}
 		if err := draw("legal", v.Legal, 2*v.Height/3, v.FontSize, ""); err != nil {
