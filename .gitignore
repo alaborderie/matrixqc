@@ -1,0 +1,5 @@
+.superpowers/
+.local/
+/matrixqc
+__pycache__/
+*.pyc
