@@ -212,6 +212,14 @@ func Synth(ctx context.Context, dir string, opts SynthOptions) error {
 		}
 		if v.ErrorKind == "near_match" {
 			phone = phone[:len(phone)-1] + "9"
+			for _, sibling := range plan.Variants {
+				if phone == sibling.Phone {
+					// All generated expectations have ten digits. A one-digit
+					// deletion stays near but cannot become a sibling-owned C2.
+					phone = v.Phone[:len(v.Phone)-1]
+					break
+				}
+			}
 		}
 		enable := ""
 		if v.ErrorKind == "single_frame_foreign_phone" {

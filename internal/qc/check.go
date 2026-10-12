@@ -166,7 +166,7 @@ func Check(ctx context.Context, opts CheckOptions) (Batch, error) {
 			continue
 		}
 		if _, err := Timecode(0, d.FPS, d.StartTimecode); err != nil {
-			d.Findings = append(d.Findings, Finding{ID: d.ID + "-timecode", Check: "C4", Outcome: "error", Message: err.Error()})
+			d.Findings = append(d.Findings, Finding{ID: d.ID + "-timecode", DeliverableID: d.ID, Check: "C4", Outcome: "error", Message: err.Error()})
 			batch.Deliverables = append(batch.Deliverables, d)
 			continue
 		}

@@ -3,12 +3,54 @@ package qc
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 	"testing"
 	"time"
 )
+
+// Invalid source metadata must retain the finding-to-deliverable relationship
+// in the serialized report, even though no frames can be analysed.
+func TestTimecodeErrorFindingRetainsDeliverableID(t *testing.T) {
+	if testing.Short() {
+		t.Skip("real ffmpeg/ffprobe/Tesseract integration")
+	}
+	dir := cacheDir(t)
+	video := filepath.Join(dir, "synthetic-invalid-timecode.mkv")
+	cmd := exec.Command("ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error", "-f", "lavfi", "-i", "color=black:size=16x16:rate=24", "-frames:v", "1", "-c:v", "ffv1", "-metadata", "timecode=invalid", video)
+	if output, err := cmd.CombinedOutput(); err != nil {
+		t.Fatalf("render synthetic timecode fixture: %v: %s", err, output)
+	}
+	matrix := filepath.Join(dir, "synthetic-matrix.csv")
+	if err := os.WriteFile(matrix, []byte("file,language,text:legal\nsynthetic-invalid-timecode.mkv,en-GB,Terms apply\n"), 0600); err != nil {
+		t.Fatal(err)
+	}
+	out := filepath.Join(dir, "report")
+	if _, err := Check(context.Background(), CheckOptions{MatrixPath: matrix, FilesDir: dir, OutDir: out, Engine: "tesseract"}); err != nil {
+		t.Fatal(err)
+	}
+	data, err := os.ReadFile(filepath.Join(out, "results.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var batch Batch
+	if err := json.Unmarshal(data, &batch); err != nil {
+		t.Fatal(err)
+	}
+	if len(batch.Deliverables) != 1 {
+		t.Fatalf("unexpected deliverables: %+v", batch.Deliverables)
+	}
+	d := batch.Deliverables[0]
+	if d.Outcome != "error" || len(d.Findings) != 1 || !strings.Contains(d.Findings[0].Message, "timecode") {
+		t.Fatalf("did not exercise invalid-timecode path: %+v", d)
+	}
+	if d.Findings[0].DeliverableID != d.ID {
+		t.Fatalf("timecode finding lost deliverable link: finding=%q deliverable=%q", d.Findings[0].DeliverableID, d.ID)
+	}
+}
 
 func TestCheckErrorCannotPass(t *testing.T) {
 	if testing.Short() {
@@ -55,6 +97,31 @@ func TestSyntheticCleanAndMissingTextReadable(t *testing.T) {
 			t.Errorf("missing fixture has unrelated OCR uncertainty: %s %+v", d.Path, d.Findings)
 		}
 	}
+}
+
+// The near-match fixture must stay unknown to the matrix even when variant 9
+// owns the ten-digit number that the original eight-variant fixture rendered.
+func TestLargerSyntheticCampaignRetainsNearMatchLabel(t *testing.T) {
+	if testing.Short() {
+		t.Skip("real OCR integration")
+	}
+	dir := cacheDir(t)
+	if err := Synth(context.Background(), dir, SynthOptions{42, 10, 1, 854, 480, 24}); err != nil {
+		t.Fatal(err)
+	}
+	batch, err := Check(context.Background(), CheckOptions{MatrixPath: filepath.Join(dir, "synthetic-matrix.csv"), FilesDir: dir, OutDir: filepath.Join(dir, "report"), Engine: "tesseract", Pipeline: PipelineOptions{Threshold: 1}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, d := range batch.Deliverables {
+		if d.Path == "synthetic-05-near_match.mp4" {
+			if d.Outcome != "needs_review" || !hasCheck(d.Findings, "C4") || hasCheck(d.Findings, "C2") {
+				t.Fatalf("near-match label disagrees with generated footage: %s %+v", d.Outcome, d.Findings)
+			}
+			return
+		}
+	}
+	t.Fatal("near-match deliverable missing")
 }
 
 func TestTimecode(t *testing.T) {
