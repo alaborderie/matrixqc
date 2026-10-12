@@ -1,0 +1,8 @@
+file,version_id,language,phone:contact,url:offer,text:legal
+synthetic-00-clean.mp4,synthetic-region-00,en-GB,2025550100,example.invalid/a,Terms apply
+synthetic-01-clean.mp4,synthetic-region-01,fr-FR,2025550101,example.invalid/b,Offre spéciale
+synthetic-02-missing.mp4,synthetic-region-02,en-GB,2025550102,example.invalid/c,Terms apply
+synthetic-03-foreign_phone.mp4,synthetic-region-03,en-GB,2025550103,example.invalid/d,Terms apply
+synthetic-04-placeholder.mp4,synthetic-region-04,fr-FR,2025550104,example.invalid/e,Offre spéciale
+synthetic-05-near_match.mp4,synthetic-region-05,en-GB,2025550105,example.invalid/f,Terms apply
+synthetic-06-single_frame_foreign_phone.mp4,synthetic-region-06,en-GB,2025550106,example.invalid/g,Terms apply

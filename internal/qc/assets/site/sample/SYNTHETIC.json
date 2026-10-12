@@ -1,0 +1,215 @@
+{
+  "synthetic": true,
+  "provenance": "AI-authored fictional campaign and delivery matrix, procedurally rendered with ffmpeg; no shop, pilot, customer, payment or testimonial evidence",
+  "plan": {
+    "Seed": 42,
+    "Variants": [
+      {
+        "File": "synthetic-00-clean.mp4",
+        "VersionID": "synthetic-region-00",
+        "Language": "en-GB",
+        "Aspect": "16:9",
+        "Phone": "2025550100",
+        "URL": "example.invalid/a",
+        "Legal": "Terms apply",
+        "ErrorKind": "clean",
+        "Font": "DejaVuSerif.ttf",
+        "Width": 854,
+        "Height": 480,
+        "FontSize": 42,
+        "InjectionFrame": 60,
+        "Label": {
+          "deliverable_path": "synthetic-00-clean.mp4",
+          "expected_outcome": "pass",
+          "expected_checks": [],
+          "seed_kind": "clean",
+          "critical": false,
+          "synthetic": true
+        }
+      },
+      {
+        "File": "synthetic-01-clean.mp4",
+        "VersionID": "synthetic-region-01",
+        "Language": "fr-FR",
+        "Aspect": "1:1",
+        "Phone": "2025550101",
+        "URL": "example.invalid/b",
+        "Legal": "Offre spéciale",
+        "ErrorKind": "clean",
+        "Font": "DejaVuSans.ttf",
+        "Width": 480,
+        "Height": 480,
+        "FontSize": 24,
+        "InjectionFrame": 60,
+        "Label": {
+          "deliverable_path": "synthetic-01-clean.mp4",
+          "expected_outcome": "pass",
+          "expected_checks": [],
+          "seed_kind": "clean",
+          "critical": false,
+          "synthetic": true
+        }
+      },
+      {
+        "File": "synthetic-02-missing.mp4",
+        "VersionID": "synthetic-region-02",
+        "Language": "en-GB",
+        "Aspect": "9:16",
+        "Phone": "2025550102",
+        "URL": "example.invalid/c",
+        "Legal": "Terms apply",
+        "ErrorKind": "missing",
+        "Font": "DejaVuSansMono.ttf",
+        "Width": 480,
+        "Height": 854,
+        "FontSize": 24,
+        "InjectionFrame": 60,
+        "Label": {
+          "deliverable_path": "synthetic-02-missing.mp4",
+          "expected_outcome": "fail",
+          "expected_checks": [
+            "C1"
+          ],
+          "seed_kind": "missing",
+          "critical": true,
+          "synthetic": true
+        }
+      },
+      {
+        "File": "synthetic-03-foreign_phone.mp4",
+        "VersionID": "synthetic-region-03",
+        "Language": "en-GB",
+        "Aspect": "16:9",
+        "Phone": "2025550103",
+        "URL": "example.invalid/d",
+        "Legal": "Terms apply",
+        "ErrorKind": "foreign_phone",
+        "Font": "DejaVuSans.ttf",
+        "Width": 854,
+        "Height": 480,
+        "FontSize": 42,
+        "InjectionFrame": 60,
+        "Label": {
+          "deliverable_path": "synthetic-03-foreign_phone.mp4",
+          "expected_outcome": "fail",
+          "expected_checks": [
+            "C1",
+            "C2"
+          ],
+          "seed_kind": "foreign_phone",
+          "critical": true,
+          "synthetic": true
+        }
+      },
+      {
+        "File": "synthetic-04-placeholder.mp4",
+        "VersionID": "synthetic-region-04",
+        "Language": "fr-FR",
+        "Aspect": "1:1",
+        "Phone": "2025550104",
+        "URL": "example.invalid/e",
+        "Legal": "Offre spéciale",
+        "ErrorKind": "placeholder",
+        "Font": "DejaVuSerif.ttf",
+        "Width": 480,
+        "Height": 480,
+        "FontSize": 24,
+        "InjectionFrame": 60,
+        "Label": {
+          "deliverable_path": "synthetic-04-placeholder.mp4",
+          "expected_outcome": "fail",
+          "expected_checks": [
+            "C3"
+          ],
+          "seed_kind": "placeholder",
+          "critical": true,
+          "synthetic": true
+        }
+      },
+      {
+        "File": "synthetic-05-near_match.mp4",
+        "VersionID": "synthetic-region-05",
+        "Language": "en-GB",
+        "Aspect": "9:16",
+        "Phone": "2025550105",
+        "URL": "example.invalid/f",
+        "Legal": "Terms apply",
+        "ErrorKind": "near_match",
+        "Font": "DejaVuSans.ttf",
+        "Width": 480,
+        "Height": 854,
+        "FontSize": 24,
+        "InjectionFrame": 60,
+        "Label": {
+          "deliverable_path": "synthetic-05-near_match.mp4",
+          "expected_outcome": "needs_review",
+          "expected_checks": [
+            "C4"
+          ],
+          "seed_kind": "near_match",
+          "critical": true,
+          "synthetic": true
+        }
+      },
+      {
+        "File": "synthetic-06-single_frame_foreign_phone.mp4",
+        "VersionID": "synthetic-region-06",
+        "Language": "en-GB",
+        "Aspect": "16:9",
+        "Phone": "2025550106",
+        "URL": "example.invalid/g",
+        "Legal": "Terms apply",
+        "ErrorKind": "single_frame_foreign_phone",
+        "Font": "DejaVuSans.ttf",
+        "Width": 854,
+        "Height": 480,
+        "FontSize": 42,
+        "InjectionFrame": 60,
+        "Label": {
+          "deliverable_path": "synthetic-06-single_frame_foreign_phone.mp4",
+          "expected_outcome": "fail",
+          "expected_checks": [
+            "C2"
+          ],
+          "seed_kind": "single_frame_foreign_phone",
+          "critical": true,
+          "synthetic": true,
+          "injection_frame": 60
+        }
+      },
+      {
+        "File": "synthetic-07-orphan.mp4",
+        "VersionID": "synthetic-region-07",
+        "Language": "fr-FR",
+        "Aspect": "1:1",
+        "Phone": "2025550107",
+        "URL": "example.invalid/h",
+        "Legal": "Offre spéciale",
+        "ErrorKind": "orphan",
+        "Font": "DejaVuSans.ttf",
+        "Width": 480,
+        "Height": 480,
+        "FontSize": 24,
+        "InjectionFrame": 60,
+        "Label": {
+          "deliverable_path": "synthetic-07-orphan.mp4",
+          "expected_outcome": "error",
+          "expected_checks": [
+            "C0"
+          ],
+          "seed_kind": "orphan",
+          "critical": false,
+          "synthetic": true
+        }
+      }
+    ],
+    "Options": {
+      "Seed": 42,
+      "Variants": 8,
+      "Seconds": 5,
+      "Width": 854,
+      "Height": 480,
+      "FPS": 24
+    }
+  }
+}

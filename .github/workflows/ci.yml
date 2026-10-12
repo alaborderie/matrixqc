@@ -1,0 +1,89 @@
+name: Synthetic M1 verification
+
+on:
+  push:
+    branches: [main, 'feat/**']
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: matrixqc-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: [self-hosted, jarvis]
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.27.2'
+      - name: Configure disk-backed scratch
+        run: |
+          root="$HOME/.cache/matrixqc/ci-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          mkdir -p "$root/tmp" "$root/cache"
+          echo "QC_CI_ROOT=$root" >> "$GITHUB_ENV"
+          echo "TMPDIR=$root/tmp" >> "$GITHUB_ENV"
+          echo "PYTHONDONTWRITEBYTECODE=1" >> "$GITHUB_ENV"
+      - name: Unit and contract checks
+        run: |
+          test -z "$(gofmt -l cmd internal)"
+          go test -short -count=1 ./...
+          go vet ./...
+          python3 -m unittest discover -s ocr -v
+          python3 -m unittest discover -s scripts -v
+      - name: Build and test real offline engines
+        run: |
+          docker build --target test -t matrixqc-test:ci .
+          docker run --rm --network none matrixqc-test:ci
+          docker build --target runner -t matrixqc-runner:ci .
+      - name: Synthetic end-to-end and sample assertions
+        run: |
+          # The runner container and Docker daemon need not share host paths or UIDs.
+          volume="matrixqc-e2e-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          container="$volume"
+          docker volume create "$volume"
+          trap 'docker rm -f "$container" >/dev/null 2>&1 || true; docker volume rm "$volume" >/dev/null 2>&1 || true' EXIT
+          docker run --rm --network none --user 0 --entrypoint sh -v "$volume:/work" \
+            matrixqc-test:ci -ec 'mkdir -p /work/tmp /work/cache; chown -R 10001:10001 /work'
+          docker create --name "$container" --network none --entrypoint sh \
+            -e TMPDIR=/work/tmp -e XDG_CACHE_HOME=/work/cache -v "$volume:/work" matrixqc-test:ci -ec '
+              matrixqc synth --seed 42 --variants 8 --seconds 5 --width 854 --height 480 --out /work/synthetic-campaign
+              for engine in rapidocr tesseract; do
+                matrixqc check --matrix /work/synthetic-campaign/synthetic-matrix.csv \
+                  --files /work/synthetic-campaign --out "/work/$engine" --engine "$engine"
+                python3 /src/scripts/assert_e2e.py /work/synthetic-campaign/synthetic-labels.json \
+                  "/work/$engine/results.json" "/work/$engine/report.html" \
+                  /src/internal/qc/assets/site/sample/results.json
+              done
+              matrixqc bench --labels /work/synthetic-campaign/synthetic-labels.json \
+                --results /work/tesseract/results.json,/work/rapidocr/results.json --benchmark /work/BENCHMARK.md
+            '
+          status=0
+          docker start -a "$container" || status=$?
+          docker cp "$container:/work/." "$QC_CI_ROOT/"
+          exit "$status"
+      - name: Build and verify read-only web
+        run: |
+          docker build --target web -t matrixqc-web:ci .
+          name="matrixqc-web-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          docker run -d --name "$name" --network none --read-only --cap-drop ALL \
+            --security-opt no-new-privileges matrixqc-web:ci
+          trap 'docker stop "$name"; docker rm "$name"' EXIT
+          # Test inside Docker too: localhost on the runner may not be daemon localhost.
+          docker run --rm --network "container:$name" --entrypoint python3 matrixqc-test:ci \
+            /src/scripts/check_web.py http://127.0.0.1:8080
+      - name: Upload verification outputs (synthetic only)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: synthetic-verification
+          path: |
+            ${{ env.QC_CI_ROOT }}/rapidocr/results.json
+            ${{ env.QC_CI_ROOT }}/rapidocr/report.html
+            ${{ env.QC_CI_ROOT }}/tesseract/results.json
+            ${{ env.QC_CI_ROOT }}/tesseract/report.html
+            ${{ env.QC_CI_ROOT }}/BENCHMARK.md
