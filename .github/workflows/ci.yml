@@ -7,7 +7,6 @@ on:
 
 permissions:
   contents: read
-  packages: write
 
 concurrency:
   group: matrixqc-${{ github.ref }}
@@ -90,6 +89,34 @@ jobs:
             ${{ env.QC_CI_ROOT }}/tesseract/results.json
             ${{ env.QC_CI_ROOT }}/tesseract/report.html
             ${{ env.QC_CI_ROOT }}/BENCHMARK.md
+      - name: Export the tested images
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: docker save matrixqc-web:ci matrixqc-runner:ci -o matrixqc-images.tar
+      - name: Retain the tested images for publication
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/upload-artifact@v4
+        with:
+          name: matrixqc-images
+          path: matrixqc-images.tar
+          retention-days: 1
+          compression-level: 0
+          if-no-files-found: error
+  # PR candidate code must not receive a package-write token.
+  publish:
+    needs: verify
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: [self-hosted, jarvis]
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: matrixqc-images
+      - name: Load the tested images
+        run: docker load -i matrixqc-images.tar
       - name: Log in to GHCR on main only
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: docker/login-action@v3
