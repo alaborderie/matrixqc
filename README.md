@@ -211,8 +211,46 @@ protocol failure/timeout, missing/foreign/placeholder/near-match, report escapin
 metrics and lossless one-frame splice tests. The single self-hosted Jarvis CI job
 also generates the 8×5-second corpus, checks both engines, asserts semantic report
 parity and builds/tests the read-only non-root web image. It neither publishes images
-nor deploys. CI mutation tests demonstrate that removing any C0–C4 finding or gating
+nor deploys on pull requests or feature-branch pushes. After merge to `main`, the
+same job publishes the **already-tested** `web` and `runner` images to
+`ghcr.io/alaborderie/matrixqc-web` and `ghcr.io/alaborderie/matrixqc-runner`, tagged
+`latest` and the full commit SHA. Only an installed `matrixqc` web Deployment is
+restarted over SSH, with a bounded readiness wait; the runner is never deployed.
+CI mutation tests demonstrate that removing any C0–C4 finding or gating
 out the injected frame breaks the end-to-end oracle.
+
+## Deployment handoff (Gate 2 required)
+
+The multi-stage Dockerfile's `web` target uses `scratch`, UID/GID `10001`, and
+port `8080`. It embeds all site files, needs no runtime secrets or writable volume,
+and exposes `GET /healthz`. Manifests belong in the separate
+[`alaborderie/k3s-ovh-config`](https://github.com/alaborderie/k3s-ovh-config) repository:
+`matrixqc.yaml` and `matrixqc-ingressroute.yaml`. Keep image names, port, environment,
+probes and rollout target coordinated across the two repositories.
+
+Public origin: **https://matrixqc.antoinelaborderie.com/**. This is the synthetic
+M1 demo only. `PILOT_URL` is left unset; `CONTACT_EMAIL` is public non-secret config.
+Do not fabricate a payment link or release hosted checking (#5/#6).
+
+After Gate 2, merge the app PR first and wait for successful image publication.
+The remote script skips restart only if Kubernetes confirms that the Deployment
+does not exist; authentication/API errors still fail. Then merge the infra PR and
+wait for its Ansible workflow and pod readiness. Subsequent app main pushes restart
+the existing Deployment. No PR/feature-branch run publishes or touches the VPS.
+
+Deployment acceptance requires both PRs merged, a **direct** HTTPS 2xx from
+`/healthz`, non-empty HTML with 2xx at `/`, and non-empty `text/css` with 2xx from
+every same-origin linked stylesheet. Check `/style.css` explicitly too (the landing
+currently embeds its CSS). For landing/assets, reject userinfo, cross-origin or
+HTTP redirects; allow at most five hops and one shared 15-second deadline per
+resource, including all redirects. Also open the synthetic sample report and CSV
+downloads. A healthy pod or health endpoint alone is not deployment acceptance.
+
+Rollback uses a **new reviewed PR**, never `kubectl rollout undo` against mutable
+`latest`: revert the faulty app change and let main rebuild/publish/restart. A saved
+good SHA tag/digest can be pinned in an emergency infra PR. To stop first deployment,
+set replicas to zero via an infra PR (the retained route will return 503). Simply
+deleting manifest files does not delete live resources in this Ansible reconciler.
 
 ## Limitations and stop point
 
