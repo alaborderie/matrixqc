@@ -17,9 +17,20 @@ class RolloutTest(unittest.TestCase):
         root.mkdir(parents=True, exist_ok=True)
         with tempfile.TemporaryDirectory(prefix="matrixqc-rollout-", dir=root) as work:
             work = Path(work)
+            sudo = work / "sudo"
+            sudo.write_text("""#!/bin/sh
+set -eu
+[ "$1" = '-n' ] || exit 11
+shift
+if [ "$MODE" = sudo-error ]; then exit 12; fi
+export PRIVILEGED=1
+exec "$@"
+""")
+            sudo.chmod(0o755)
             kubectl = work / "kubectl"
             kubectl.write_text("""#!/bin/sh
 set -eu
+[ "${PRIVILEGED:-}" = 1 ] || { echo "kubeconfig permission denied" >&2; exit 13; }
 printf '%s\\n' "$*" >> "$CALLS"
 case "$*" in
   '-n default get deployment matrixqc --ignore-not-found -o name')
@@ -66,6 +77,12 @@ esac
         result, calls = self.run_rollout("restart-error")
         self.assertEqual(result.returncode, 8)
         self.assertEqual(len(calls), 2)
+
+    def test_sudo_error_is_not_misreported_as_first_install(self):
+        result, calls = self.run_rollout("sudo-error")
+        self.assertEqual(result.returncode, 12)
+        self.assertEqual(calls, [])
+        self.assertNotIn("not installed", result.stdout)
 
     def test_unhealthy_rollout_fails_the_workflow(self):
         result, calls = self.run_rollout("rollout-error")
