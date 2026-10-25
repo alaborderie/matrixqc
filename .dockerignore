@@ -1,6 +1,5 @@
 .git
 .local
-.superpowers
 matrixqc
 **/__pycache__
 .env*

@@ -18,7 +18,7 @@ func NewSite(config SiteConfig) (http.Handler, error) {
 	if config.PilotURL != "" {
 		u, err := url.Parse(config.PilotURL)
 		if err != nil || (u.Scheme != "https" && u.Scheme != "http") || u.Hostname() == "" || u.User != nil {
-			return nil, fmt.Errorf("PILOT_URL must be an absolute http(s) founder-issued URL")
+			return nil, fmt.Errorf("PILOT_URL must be an absolute http(s) URL")
 		}
 	}
 	tmpl, err := template.New("index.html").ParseFS(siteAssets, "assets/site/index.html")

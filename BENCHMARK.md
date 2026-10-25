@@ -1,8 +1,8 @@
-# Synthetic M1 benchmark
+# Synthetic benchmark
 
-AI-authored synthetic campaign and delivery matrices only; not pilot, customer or shop evidence. Demand is unvalidated and the paid-pilot condition remains unmet. M2/M3 remain on hold.
+AI-authored synthetic campaign and delivery matrices only; not pilot, customer or shop evidence. Real-file accuracy is unvalidated.
 
-M1 results are measured on synthetic footage only and say nothing about real broadcast supers.
+These results are measured on synthetic footage only and say nothing about real broadcast supers.
 
 | Metric | Engine | Measured value |
 |---|---|---|
@@ -29,11 +29,11 @@ M1 results are measured on synthetic footage only and say nothing about real bro
 
 Rates are fractions, not percentages. False alarms include both fail and needs_review on clean labels. Gate misses count labelled injection frames never OCR'd; an OCR miss is separate from a gate miss. CPU includes Go and waited-for child processes (ffprobe, ffmpeg and OCR); wall time includes engine startup.
 
-These are small deterministic synthetic cases, including near-match typography. The benchmark is not a recall guarantee or evidence of willingness to pay. Shops must independently label real originals, measure preparation and human review time, and authorize footage use before M2 can be released.
+These are small deterministic synthetic cases, including near-match typography. The benchmark is not a recall guarantee or evidence of willingness to pay. Shops must independently label real originals, measure preparation and human review time, and authorize footage use before drawing conclusions about real deliverables.
 
 ## Measurement provenance and limitations
 
-- Linux/amd64 on Jarvis, Docker CPU only, runtime network disabled. Both engines
+- Linux/amd64 workstation, Docker CPU only, runtime network disabled. Both engines
   ran sequentially in the final post-review verification; other verification activity
   overlapped. Wall time includes shared-host contention, not an isolated throughput claim.
 - `synth --seed 42 --variants 8 --seconds 5 --width 854 --height 480 --fps 24`.
@@ -64,7 +64,7 @@ run includes the review regressions for formatted phones, full URLs, finding spa
 blank leaders, seed validity, completeness, provenance and recorded pass settings.
 This is fixture tuning, not evidence
 that the OCR risk is solved: hard supers can still require substantial review.
-The first RapidOCR full run hit the tool's 120-second deadline and had no finalized
+The first RapidOCR full run hit a 120-second command timeout and had no finalized
 results; it is not included as a successful measurement. The completed run above
 used a longer background execution window.
 

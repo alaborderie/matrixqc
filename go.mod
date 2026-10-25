@@ -1,4 +1,4 @@
-module github.com/alaborderie/a-1006-122137
+module github.com/alaborderie/matrixqc
 
 go 1.24.0
 

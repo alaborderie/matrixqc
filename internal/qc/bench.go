@@ -108,9 +108,9 @@ func WriteBenchmark(w io.Writer, metrics []BenchmarkMetrics) error {
 	}
 	heading := "# Local benchmark\n\nInput provenance is not all synthetic. Demand remains unvalidated by this measurement. This does not establish pilot payments, customer demand or permission to use footage."
 	if allSynthetic {
-		heading = "# Synthetic M1 benchmark\n\nAI-authored synthetic campaign and delivery matrices only; not pilot, customer or shop evidence. Demand is unvalidated and the paid-pilot condition remains unmet. M2/M3 remain on hold."
+		heading = "# Synthetic benchmark\n\nAI-authored synthetic campaign and delivery matrices only; not pilot, customer or shop evidence. Real-file accuracy is unvalidated."
 	}
-	if _, err := fmt.Fprintln(w, heading+"\n\nM1 results are measured on synthetic footage only and say nothing about real broadcast supers."); err != nil {
+	if _, err := fmt.Fprintln(w, heading+"\n\nThese results are measured on synthetic footage only and say nothing about real broadcast supers."); err != nil {
 		return err
 	}
 	for _, m := range metrics {

@@ -22,7 +22,7 @@ Verification: `go test ./...`, `python3 -m unittest discover -s ocr`, and the Do
 runs both real engines on AI-authored synthetic footage; no customer footage or
 pilot evidence is used.
 
-Sources checked during BUILD:
+Sources:
 - https://pypi.org/pypi/rapidocr/3.9.2/json (wheel SHA-256 `04d6b8d151f823d930bd91910555f57bea897c0c44fa6794267b94cf9c1ef9a0`)
 - https://github.com/RapidAI/RapidOCR (local model-path and ONNX CPU configuration)
 

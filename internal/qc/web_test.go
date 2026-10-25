@@ -15,7 +15,7 @@ func TestDemoRoutesAndPilotFallback(t *testing.T) {
 		priced bool
 	}{
 		{"unset", SiteConfig{}, "Pilot link not configured", false},
-		{"contact", SiteConfig{ContactEmail: "founder@example.invalid"}, "mailto:founder@example.invalid", false},
+		{"contact", SiteConfig{ContactEmail: "contact@example.invalid"}, "mailto:contact@example.invalid", false},
 		{"configured", SiteConfig{PilotURL: "https://pilot.example.invalid/start"}, "https://pilot.example.invalid/start", true},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
@@ -35,7 +35,7 @@ func TestDemoRoutesAndPilotFallback(t *testing.T) {
 						t.Fatal("CTA/provenance missing", body)
 					}
 					if strings.Contains(body, "$49") != tc.priced {
-						t.Fatal("price offered without configured founder link")
+						t.Fatal("price offered without a configured pilot link")
 					}
 				}
 			}
