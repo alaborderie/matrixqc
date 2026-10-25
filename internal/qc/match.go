@@ -72,7 +72,7 @@ func NewMatcher(m Matrix, row VersionRow, opts MatchOptions) *Matcher {
 	base, _, _ := strings.Cut(strings.ToLower(row.Language), "-")
 	if base != "en" && base != "fr" {
 		matcher.unreadable = true
-		matcher.add(0, "C4", "needs_review", Expectation{}, Box{}, "", "Language not validated by the M1 synthetic corpus")
+		matcher.add(0, "C4", "needs_review", Expectation{}, Box{}, "", "Language not validated by the synthetic corpus")
 	}
 	if len(row.Expectations) == 0 {
 		matcher.unreadable = true

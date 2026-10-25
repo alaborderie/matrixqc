@@ -1,24 +1,29 @@
 # matrixqc
 
-**Version-aware text QC for rendered video deliverables.** Read phone numbers, URLs
-and legal text against each version’s delivery-matrix row; flag a variant that used
-its sibling’s number, including a single-frame foreign-number injection.
+**Version-aware text QC for rendered video deliverables.** A campaign often ships
+dozens of versions of the same spot, each with its own phone number, URL and legal
+line. matrixqc reads the on-screen text of every rendered file with offline OCR and
+compares it with that version's row in the delivery matrix. It flags a variant that
+shows its sibling's number, even when the wrong number appears for a single frame.
 
-## Synthetic-only M1 — not demand validation
+Public demo: <https://matrixqc.antoinelaborderie.com/>
 
-**M1 results are measured on synthetic footage only and say nothing about real broadcast supers.**
+Everything committed here (campaign files, matrices, labels and the
+[sample report](internal/qc/assets/site/sample/)) is **synthetic**: AI-authored
+fictional test data rendered with ffmpeg. The [benchmark](BENCHMARK.md) was measured
+on that synthetic footage only and says nothing about real broadcast supers. No raw
+video is committed; the sample report contains synthetic evidence crops only.
 
-Every generated campaign file, matrix, label and sample report is **synthetic**:
-AI-authored fictional test data, procedurally rendered with ffmpeg. None is pilot,
-customer, shop, payment or testimonial evidence. No paid pilot has been secured.
-The founder waived the no-product-code condition **for M1 only** on 2026-10-09;
-demand remains unvalidated and the two paid $49 pilots condition remains unmet.
-Issues #5 and #6 (hosted checking and self-serve) stay on hold.
+## How it works
 
-See [the measured benchmark](BENCHMARK.md), including the initial hard-typography
-failures. The static sample lives in [`internal/qc/assets/site/sample/`](internal/qc/assets/site/sample/).
-Open its `report.html` offline. No raw video is committed or embedded in the web image;
-the sample report contains synthetic evidence crops only.
+1. `check` joins each video file to exactly one matrix row (by basename or glob).
+2. ffmpeg decodes every frame. A 16×16 tile gate skips frames that haven't changed
+   since the last OCR'd frame (`--no-gate` disables it).
+3. Tesseract or RapidOCR (CPU, offline, hash-pinned models) reads each OCR'd frame.
+4. Reads are normalised and matched against the row's expected phones, URLs and
+   text, and against every other row's values.
+5. The results go to `results.json` and a self-contained `report.html`, with
+   evidence crops and source timecodes.
 
 ## What it checks
 
@@ -48,7 +53,7 @@ The report is **not a certificate, delivery sign-off or liability transfer**. It
 the checks, source timecodes, decoded/OCR frame counts and evidence read under the
 chosen settings. There is no turnaround or general accuracy promise.
 
-## Quick start (synthetic files only)
+## Quick start
 
 Prerequisites: Linux/amd64, Docker and Python 3. The runner bundles ffmpeg/ffprobe,
 Tesseract, RapidOCR CPU models and fonts. Building downloads dependencies; the
@@ -122,7 +127,7 @@ run_qc bench --labels /work/synthetic-campaign/synthetic-labels.json \
 
 Strict UTF-8 CSV, header required. `file` is required: an exact basename or glob,
 never a path. Optional `version_id` values must be unique when non-empty; `language`
-is a language tag (the M1 fixture covers `en-GB` and `fr-FR` only). Any number of
+is a language tag (the synthetic fixture covers `en-GB` and `fr-FR` only). Any number of
 `phone:<label>`, `url:<label>`, `text:<label>` and `forbid:<label>` columns may follow.
 Unknown or duplicate headers, empty labels and malformed cells report row and column.
 
@@ -142,7 +147,7 @@ new immutable SHA-256 recorded in every batch; originals are never edited.
 | URL | Lowercase, remove HTTP(S) scheme and trailing `/`; exact value. |
 | Text / forbid | Unicode NFKC, casefold, whitespace/punctuation collapsed; exact contiguous normalised phrase in an OCR line. |
 
-## Settings and local development
+## Settings and native build
 
 `check` and direct-run `bench` accept `--min-frames 12`, `--confidence 0.8`,
 `--gate-threshold 1`, `--no-gate` (OCR every frame) and repeated `--placeholder TOKEN`.
@@ -163,18 +168,17 @@ go build -o matrixqc ./cmd/matrixqc
 ./matrixqc serve --addr 127.0.0.1:8080
 ```
 
-`serve` embeds the site, requires no home/cache directory and writes no files.
-`PORT` defaults to 8080. Set public, non-secret `PILOT_URL` to a **founder-issued**
-HTTP(S) payment link or form. Otherwise set `CONTACT_EMAIL`; no price button appears.
-With neither set, the page says the pilot link is not configured. No accounts,
-upload, queue, object storage, billing integration, database or secret exists in M1.
-Only the `web` target is for later INFRA deployment; the runner stays local.
+`serve` embeds the static demo site, requires no home/cache directory and writes no
+files. `PORT` defaults to 8080. Optional public, non-secret settings: `PILOT_URL`
+(an HTTP(S) payment link or form) or `CONTACT_EMAIL`. With neither set, the page says
+the pilot link is not configured. There are no accounts, uploads, queue, database or
+secrets. Only the `web` image is meant to be hosted; the runner stays local.
 
-## Seeding (founder’s later real-file workflow)
+## Seeding test cases from real files
 
-**No agent handles real footage in M1.** Only after permission and paid pilots exist,
-the founder or shop independently verifies pristine originals, reshapes the matrix,
-and labels the results on the machine that holds the footage.
+Run this only on the machine that holds the footage, with permission to use it.
+Verify pristine originals independently first, then reshape the matrix and label
+the results locally.
 
 `seed --matrix <matrix.csv> --out <empty-cache-directory>` leaves originals untouched:
 it swaps the first two rows’ phones, requires a known absent legal string in the third
@@ -193,7 +197,7 @@ one frame in A with B’s frame, using lossless FFV1 `.mkv` in scratch and symli
 untouched siblings. Dimensions and frame rates must agree; filenames must be exact.
 Use a sibling with a genuinely different expected phone/URL. Do not score seed labels
 as truth without checking originals: existing errors or ambiguous inputs invalidate
-the seed assumptions. Injected files are tests, not original pilot evidence.
+the seed assumptions. Injected files are tests, not evidence about the originals.
 
 ## Verification
 
@@ -208,51 +212,15 @@ docker run --rm --network none matrixqc-test:local
 
 The Docker test target runs the full suite with both real engines, decode/gate,
 protocol failure/timeout, missing/foreign/placeholder/near-match, report escaping,
-metrics and lossless one-frame splice tests. The single self-hosted Jarvis CI job
-also generates the 8×5-second corpus, checks both engines, asserts semantic report
-parity and builds/tests the read-only non-root web image. It neither publishes images
-nor deploys on pull requests or feature-branch pushes. After merge to `main`, the
-same job publishes the **already-tested** `web` and `runner` images to
+metrics and lossless one-frame splice tests. CI (GitHub-hosted `ubuntu-latest`) also
+generates the 8×5-second corpus, checks both engines, asserts semantic report parity
+and builds/tests the read-only non-root web image. Pull requests never publish. On
+`main`, the **already-tested** `web` and `runner` images are pushed to
 `ghcr.io/alaborderie/matrixqc-web` and `ghcr.io/alaborderie/matrixqc-runner`, tagged
-`latest` and the full commit SHA. Only an installed `matrixqc` web Deployment is
-restarted over SSH, with a bounded readiness wait; the runner is never deployed.
-CI mutation tests demonstrate that removing any C0–C4 finding or gating
-out the injected frame breaks the end-to-end oracle.
+`latest` and the full commit SHA. Mutation tests show that removing any C0–C4 finding
+or gating out the injected frame breaks the end-to-end oracle.
 
-## Deployment handoff (Gate 2 required)
-
-The multi-stage Dockerfile's `web` target uses `scratch`, UID/GID `10001`, and
-port `8080`. It embeds all site files, needs no runtime secrets or writable volume,
-and exposes `GET /healthz`. Manifests belong in the separate
-[`alaborderie/k3s-ovh-config`](https://github.com/alaborderie/k3s-ovh-config) repository:
-`matrixqc.yaml` and `matrixqc-ingressroute.yaml`. Keep image names, port, environment,
-probes and rollout target coordinated across the two repositories.
-
-Public origin: **https://matrixqc.antoinelaborderie.com/**. This is the synthetic
-M1 demo only. `PILOT_URL` is left unset; `CONTACT_EMAIL` is public non-secret config.
-Do not fabricate a payment link or release hosted checking (#5/#6).
-
-After Gate 2, merge the app PR first and wait for successful image publication.
-The remote script skips restart only if Kubernetes confirms that the Deployment
-does not exist; authentication/API errors still fail. Then merge the infra PR and
-wait for its Ansible workflow and pod readiness. Subsequent app main pushes restart
-the existing Deployment. No PR/feature-branch run publishes or touches the VPS.
-
-Deployment acceptance requires both PRs merged, a **direct** HTTPS 2xx from
-`/healthz`, non-empty HTML with 2xx at `/`, and non-empty `text/css` with 2xx from
-every same-origin linked stylesheet. Check `/style.css` explicitly too (the landing
-currently embeds its CSS). For landing/assets, reject userinfo, cross-origin or
-HTTP redirects; allow at most five hops and one shared 15-second deadline per
-resource, including all redirects. Also open the synthetic sample report and CSV
-downloads. A healthy pod or health endpoint alone is not deployment acceptance.
-
-Rollback uses a **new reviewed PR**, never `kubectl rollout undo` against mutable
-`latest`: revert the faulty app change and let main rebuild/publish/restart. A saved
-good SHA tag/digest can be pinned in an emergency infra PR. To stop first deployment,
-set replicas to zero via an infra PR (the retained route will return 503). Simply
-deleting manifest files does not delete live resources in this Ansible reconciler.
-
-## Limitations and stop point
+## Limitations
 
 - Only a small AI-authored synthetic campaign was measured. Larger fonts/shorter
   reserved URLs were needed for the clean fixtures; initial harder URLs raised 50%
@@ -265,9 +233,10 @@ deleting manifest files does not delete live resources in this Ansible reconcile
 - CPU cost includes waited-for child processes; wall time includes startup. Runtime
   network is not needed. Changing library, model, encoder or font versions may change
   OCR results or synthetic video bytes; deterministic synthesis is within one environment.
-- No real-file performance, accuracy, willingness-to-pay or turnaround claim. The
-  founder must secure two independent paid $49 pilots with permissioned footage and
-  actual matrices, measure critical misses, clean false alarms, compute and total
-  prep/review savings, and determine whether footage may leave each shop.
+- No real-file performance, accuracy or turnaround claim. Real use needs independently
+  labelled originals, measured critical misses and false alarms, and permission to
+  process the footage.
 
-**Stop after M1.** Do not release #5/#6 or build hosted checking from synthetic numbers.
+## License
+
+[MIT](LICENSE)

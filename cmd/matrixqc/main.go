@@ -14,7 +14,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/alaborderie/a-1006-122137/internal/qc"
+	"github.com/alaborderie/matrixqc/internal/qc"
 )
 
 func run(ctx context.Context, args []string) error {

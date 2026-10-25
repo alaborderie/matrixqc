@@ -1,8 +1,8 @@
-name: Synthetic M1 verification and publication
+name: Synthetic verification and publication
 
 on:
   push:
-    branches: [main, 'feat/**']
+    branches: [main]
   pull_request:
 
 permissions:
@@ -14,7 +14,7 @@ concurrency:
 
 jobs:
   verify:
-    runs-on: [self-hosted, jarvis]
+    runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
@@ -104,8 +104,9 @@ jobs:
   # PR candidate code must not receive a package-write token.
   publish:
     needs: verify
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    runs-on: [self-hosted, jarvis]
+    # Only the canonical repository publishes; forks never push images.
+    if: github.repository == 'alaborderie/matrixqc' && github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
     timeout-minutes: 20
     permissions:
       contents: read
@@ -137,13 +138,3 @@ jobs:
             docker push "$image:latest"
             docker image inspect "$image:$GITHUB_SHA" --format '{{json .RepoDigests}}' >> "$GITHUB_STEP_SUMMARY"
           done
-      - name: Restart installed web deployment on main only
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.VPS_SSH_IP }}
-          username: ${{ secrets.VPS_SSH_USER }}
-          port: ${{ secrets.VPS_SSH_PORT }}
-          password: ${{ secrets.VPS_SSH_PASSWORD }}
-          command_timeout: 3m
-          script_path: scripts/rollout_web.sh
